@@ -1,16 +1,61 @@
 import { Node } from "./node.mjs";
 
 export class Tree {
-  #arr;
+  #root;
 
   constructor(arr) {
-    //sort the array and remove the duplicates
-    this.#arr = this.#sort(arr.slice());
-    this.prettyPrint(this.buildTree(this.#arr));
+    //sort the array and remove the duplicates then build the tree
+    this.#root = this.buildTree(this.#sort(arr.slice()));
   }
 
-  insert(value) {
-    
+  delete(value, root = this.#root) {
+    if (root) {
+      if (root.data < value) {
+        root.right = this.delete(value, root.right);
+      } else if (root.data > value) {
+        root.left = this.delete(value, root.left);
+      } else if (root.data === value) {
+        if (root.isLeaf()) {
+          root.data = null;
+          root = null;
+        } else if (root.hasExactlyOneRightChild()) {
+          return root.right;
+        } else if (root.hasExactlyOneLeftChild()) {
+          return root.left;
+        } else {
+          const subsequentNode = this.findSubsequentNode(root);
+          root.data = subsequentNode.data;
+          root.right = this.delete(subsequentNode.data, root.right);
+        }
+      }
+    }
+    return root;
+  }
+
+  findSubsequentNode(root) {
+    let cur = root.right;
+
+    while (cur?.left) {
+      cur = cur.left;
+    }
+
+    return cur;
+  }
+
+  insert(value, root = this.#root) {
+    if (root.data < value) {
+      if (root.right === null) {
+        root.right = new Node(value);
+      } else {
+        this.insert(value, root.right);
+      }
+    } else if (root.data > value) {
+      if (root.left === null) {
+        root.left = new Node(value);
+      } else {
+        this.insert(value, root.left);
+      }
+    }
   }
 
   buildTree(arr, start = 0, end = arr.length - 1) {
@@ -54,7 +99,7 @@ export class Tree {
     return Array.from(new Set(res)); //get rid of duplicates on return
   }
 
-  prettyPrint(node, prefix = "", isLeft = true) {
+  prettyPrint(node = this.#root, prefix = "", isLeft = true) {
     if (node === null) {
       return;
     }

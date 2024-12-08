@@ -9,6 +9,22 @@ export class Node {
     this.#leftNode = null;
   }
 
+  isLeaf() {
+    return this.#rightNode === null && this.#leftNode === null;
+  }
+
+  hasExactlyOneRightChild() {
+    return this.#rightNode && !this.#leftNode;
+  }
+
+  hasExactlyOneLeftChild() {
+    return this.#leftNode && !this.#rightNode;
+  }
+
+  set data(val) {
+    this.#data = val;
+  }
+
   get data() {
     return this.#data;
   }
