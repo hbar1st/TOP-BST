@@ -42,6 +42,105 @@ export class Tree {
     return cur;
   }
 
+  find(value, root = this.#root) {
+    if (root?.data === value) {
+      return root;
+    } else {
+      if (root?.data > value) {
+        return this.find(value, root.left);
+      } else if (root?.data < value) {
+        return this.find(value, root.right);
+      }
+    }
+    return null;
+  }
+
+  levelOrder(cb, root = this.#root) {
+    if (!cb) {
+      throw new Error("A callback is missing.");
+    }
+    if (root === null) {
+      return null;
+    }
+    let queue = [root];
+    while (queue.length > 0) {
+      const curNode = queue.shift();
+      cb(curNode.data);
+      if (curNode.left) {
+        queue.push(curNode.left);
+      }
+      if (curNode.right) {
+        queue.push(curNode.right);
+      }
+    }
+    return;
+  }
+
+  preOrder(cb, root = this.#root) {
+    if (!cb) {
+      throw new Error("A callback is missing.");
+    }
+    if (root === null) {
+      return null;
+    }
+    cb(root.data);
+    this.preOrder(cb, root.left);
+    this.preOrder(cb, root.right);
+
+    return;
+  }
+
+  inOrder(cb, root = this.#root) {
+    if (!cb) {
+      throw new Error("A callback is missing.");
+    }
+    if (root === null) {
+      return null;
+    }
+    this.inOrder(cb, root.left);
+    cb(root.data);
+    this.inOrder(cb, root.right);
+
+    return;
+  }
+
+  postOrder(cb, root = this.#root) {
+    if (!cb) {
+      throw new Error("A callback is missing.");
+    }
+    if (root === null) {
+      return null;
+    }
+    this.postOrder(cb, root.left);
+    this.postOrder(cb, root.right);
+    cb(root.data);
+
+    return;
+  }
+
+  depth(node, root = this.#root) {
+    if (node === null || node.data === root.data) {
+      return 0;
+    }
+    if (node.data > root.data) {
+      return 1 + this.depth(node, root.right);
+    } else {
+      return 1 + this.depth(node, root.left);
+    }
+  }
+  height(node) {
+    if (node === null || node.isLeaf()) {
+      return 0;
+    }
+    const leftH = 1 + this.height(node.left);
+    const rightH = 1 + this.height(node.right);
+    if (leftH > rightH) {
+      return leftH;
+    } else {
+      return rightH;
+    }
+  }
+
   insert(value, root = this.#root) {
     if (root.data < value) {
       if (root.right === null) {

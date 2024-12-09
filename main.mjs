@@ -8,6 +8,5 @@ t.insert(7);
 
 t.prettyPrint();
 
-t.delete(4);
-
-t.prettyPrint();
+let node = t.find(6);
+console.log(t.depth(node));

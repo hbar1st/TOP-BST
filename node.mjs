@@ -9,6 +9,10 @@ export class Node {
     this.#leftNode = null;
   }
 
+  toString() {
+    return `Data: ${this.data}`;
+  }
+
   isLeaf() {
     return this.#rightNode === null && this.#leftNode === null;
   }
