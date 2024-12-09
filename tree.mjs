@@ -118,6 +118,15 @@ export class Tree {
     return;
   }
 
+  isBalanced() {
+    if (this.#root.isLeaf()) {
+      return true;
+    }
+    const leftHeight = this.height(this.#root.left);
+    const rightHeight = this.height(this.#root.right);
+    return Math.abs(leftHeight - rightHeight) <= 1;
+  }
+
   depth(node, root = this.#root) {
     if (node === null || node.data === root.data) {
       return 0;
@@ -155,6 +164,12 @@ export class Tree {
         this.insert(value, root.left);
       }
     }
+  }
+
+  rebalance() {
+    let arr = [];
+    this.inOrder((el) => arr.push(el));
+    this.#root = this.buildTree(arr);
   }
 
   buildTree(arr, start = 0, end = arr.length - 1) {
